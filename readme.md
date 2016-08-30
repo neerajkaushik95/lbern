@@ -1,5 +1,7 @@
 to do 
 
-1. ask about creating instance in construct - yelp
+1. web sockets
 2. return error on route not found.
-3. validation not working - reuse validation .
+3. use of translation api.
+4. abstract class.
+5. service provider and container
