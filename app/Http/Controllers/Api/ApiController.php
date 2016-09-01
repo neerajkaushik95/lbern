@@ -11,6 +11,7 @@ use FoursquareApi;
 use App\Http\Requests\FsLlsearchRequest;
 use App\Http\Requests\YelpBusinessRequest;
 use App\Http\Requests\FsVenueRequest;
+use App\Http\Requests\FsPlaceExploreRequest;
 
 class ApiController extends Controller
 {
@@ -58,19 +59,22 @@ class ApiController extends Controller
     }
 
     //get call for foursquare famous places : @params : ll
-    public function placesGet(FsLlsearchRequest $request)
+    public function placesGet(FsPlaceExploreRequest $request)
     {
-        $response = json_decode($this->fsClient->GetPublic('venues/explore', ['ll' => $request->get('ll')]),True);
+        $response = json_decode($this->fsClient->GetPublic('venues/explore', ['ll' => $request->get('ll'), 'section'=>$request->get('section'), 'limit'=>20, 'venuePhotos'=>1]),True);
         $items = $response['response']['groups'][0]['items'];
         foreach($items as $item){
             $venue = $item['venue'];
             if(isset($venue['hours'])){
                 $hour = $venue['hours'];
             }
+            $prefix = (!empty($venue['photos']['groups'][0]['items'][0]['prefix'])) ?                                                     $venue['photos']['groups'][0]['items'][0]['prefix'] : Null ;
+            $suffix = (!empty($venue['photos']['groups'][0]['items'][0]['suffix'])) ?                                                     $venue['photos']['groups'][0]['items'][0]['suffix'] : Null ;
             $type = (!empty($venue['categories'][0]['shortName'])) ? $venue['categories'][0]['shortName'] : Null;
             $venues[] = ['id' => $venue['id'],'name'=>$venue['name'], 'contact'=>$venue['contact'],
-            'lat'=>$venue['location']['lat'], 'lng'=> $venue['location']['lng'], 'address'=>$venue['location']['formattedAddress'],
-            'fs_stats'=>$venue['stats'], 'rating'=>$venue['rating'], 'hours' => $hour, 'type'=>$type];
+            'lat'=>$venue['location']['lat'], 'lng'=> $venue['location']['lng'],                                                       'address'=>$venue['location']['formattedAddress'],
+            'fs_stats'=>$venue['stats'], 'rating'=>$venue['rating'], 'hours' => $hour, 'type'=>$type,
+            'prefix'=>$prefix, 'suffix'=>$suffix];
         }
         return response()->json($venues);
     }
