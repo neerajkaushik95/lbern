@@ -67,9 +67,10 @@ class ApiController extends Controller
             if(isset($venue['hours'])){
                 $hour = $venue['hours'];
             }
+            $type = (!empty($venue['categories'][0]['shortName'])) ? $venue['categories'][0]['shortName'] : Null;
             $venues[] = ['id' => $venue['id'],'name'=>$venue['name'], 'contact'=>$venue['contact'],
             'lat'=>$venue['location']['lat'], 'lng'=> $venue['location']['lng'], 'address'=>$venue['location']['formattedAddress'],
-            'fs_stats'=>$venue['stats'], 'rating'=>$venue['rating'], 'hours' => $hour];
+            'fs_stats'=>$venue['stats'], 'rating'=>$venue['rating'], 'hours' => $hour, 'type'=>$type];
         }
         return response()->json($venues);
     }
