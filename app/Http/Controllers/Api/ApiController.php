@@ -56,10 +56,9 @@ class ApiController extends Controller
         $response = json_decode($this->fsClient->GetPublic('venues/explore', ['ll' => $request->get('ll'), 'section'=>$request->get('section'), 'limit'=>20, 'venuePhotos'=>1]),True);
         $items = $response['response']['groups'][0]['items'];
         foreach($items as $item){
+
             $venue = $item['venue'];
-            if(isset($venue['hours'])){
-                $hour = $venue['hours'];
-            }
+            $hour = (isset($venue['hours']))? $venue['hours'] : null;
             $prefix = (!empty($venue['photos']['groups'][0]['items'][0]['prefix'])) ?                                                     $venue['photos']['groups'][0]['items'][0]['prefix'] : Null ;
             $suffix = (!empty($venue['photos']['groups'][0]['items'][0]['suffix'])) ?                                                     $venue['photos']['groups'][0]['items'][0]['suffix'] : Null ;
             $type = (!empty($venue['categories'][0]['shortName'])) ? $venue['categories'][0]['shortName'] : Null;
